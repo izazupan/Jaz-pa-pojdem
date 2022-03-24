@@ -1,3 +1,2 @@
-# projektnaOPB
+# Jaz pa pojdem
 Projekt pri Osnovah podatkovnih baz
-Turistični vodič Jaz pa pojdem
