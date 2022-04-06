@@ -1,4 +1,4 @@
-# projektnaOPB
+# Jaz pa pojdem
 Projekt pri Osnovah podatkovnih baz
 
 Avtorici: Iza Čebulj in Neža Lesnjak
