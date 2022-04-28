@@ -9,39 +9,36 @@ import csv
 
 def ustvari_tabelo():
     cur.execute("""
-    CREATE TABLE oseba (
-        uporabnisko_ime TEXT PRIMARY KEY NOT NULL,
-        geslo TEXT NOT NULL,
-        ime TEXT NOT NULL,
-        priimek TEXT NOT NULL,
-        datum_rojstva DATE NOT NULL
-    );
-    """) 
+        CREATE TABLE namestitev (
+            id SERIAL UNIQUE PRIMARY KEY,
+            vrsta_namestitve TEXT NOT NULL,
+            cena DECIMAL NOT NULL
+            );
+    """)
     conn.commit()
 
 def pobrisi_tabelo():
     cur.execute("""
-        DROP TABLE oseba;
+        DROP TABLE namestitev;
     """)
     conn.commit()
 
 def uvozi_podatke():
-    with open("podatki/oseba.csv", encoding="utf-16", errors='ignore') as f:
+    with open("podatki/namestitev.csv", encoding="utf-16", errors='ignore') as f:
         rd = csv.reader(f)
         next(rd) # izpusti naslovno vrstico
         for r in rd:
             cur.execute("""
-                INSERT INTO oseba
-                (uporabnisko_ime,geslo,ime,priimek,datum_rojstva)
-                VALUES (%s, %s, %s, %s, %s)
-            """, r)
-            print("Uvožena oseba %s z ID-jem %s" % (r[2], r[0]))
+                INSERT INTO transport
+                (vrsta_namestitve, cena)
+                VALUES (%s, %s)
+                """, r)
+            rid, = cur.fetchone()
+            print("Uvožena vrsta namestitve %s z ID-jem %d" % (r[0], rid))
     conn.commit()
 
 
 conn = psycopg2.connect(database=auth.db, host=auth.host, user=auth.user, password=auth.password)
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) 
 
-# pobrisi_tabelo()
-# ustvari_tabelo()
-uvozi_podatke()
+ustvari_tabelo()
