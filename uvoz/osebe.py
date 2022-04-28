@@ -1,5 +1,5 @@
 # uvozimo ustrezne podatke za povezavo
-from . import auth
+import auth as auth
 
 # uvozimo psycopg2
 import psycopg2, psycopg2.extensions, psycopg2.extras
@@ -14,7 +14,7 @@ def ustvari_tabelo():
         geslo TEXT NOT NULL,
         ime TEXT NOT NULL,
         priimek TEXT NOT NULL,
-        datum_rojstva DATETIME NOT NULL
+        datum_rojstva DATE NOT NULL
     );
     """) 
     conn.commit()
@@ -26,16 +26,14 @@ def pobrisi_tabelo():
     conn.commit()
 
 def uvozi_podatke():
-    with open("podatki/oseba.csv", encoding="UTF-8") as f:
+    with open("podatki/oseba.csv", encoding="utf-16", errors='ignore') as f:
         rd = csv.reader(f)
         next(rd) # izpusti naslovno vrstico
         for r in rd:
-            r = [None if x in ('', '-') else x for x in r]
             cur.execute("""
                 INSERT INTO oseba
                 (uporabnisko_ime,geslo,ime,priimek,datum_rojstva)
                 VALUES (%s, %s, %s, %s, %s)
-                RETURNING uporabnisko_ime
             """, r)
             print("Uvožena oseba %s z ID-jem %s" % (r[2], r[0]))
     conn.commit()
@@ -43,3 +41,7 @@ def uvozi_podatke():
 
 conn = psycopg2.connect(database=auth.db, host=auth.host, user=auth.user, password=auth.password)
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) 
+
+pobrisi_tabelo()
+ustvari_tabelo()
+uvozi_podatke()
