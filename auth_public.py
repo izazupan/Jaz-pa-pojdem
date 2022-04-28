@@ -1,4 +1,4 @@
-db = 'banka2022_izaneza'
+db = 'sem2022_izac'
 host = 'baza.fmf.uni-lj.si'
-user = 'javnost'
-password = 'javnogeslo'
+user = 'izac'
+password = '2cdhqi9yhon'
