@@ -13,7 +13,11 @@ def ustvari_tabelo():
         uporabnisko_ime TEXT PRIMARY KEY,
         ime TEXT NOT NULL,
         priimek TEXT NOT NULL,
-        datum_rojstva DATE NOT NULL
+        datum_rojstva DATE NOT NULL,
+        drzavljanstvo TEXT REFERENCES drzava(kratica),
+        geslo TEXT NOT NULL,
+        clanstvo INTEGER REFERENCES skupina(id_skupine),
+        st_izleta NUMERIC REFERENCES obisk(st_izleta)
     );
     """) 
     conn.commit()
@@ -29,10 +33,11 @@ def uvozi_podatke():
         rd = csv.reader(f)
         next(rd) # izpusti naslovno vrstico
         for r in rd:
+            r = [None if x == '' else x for x in r]
             cur.execute("""
                 INSERT INTO oseba
-                (uporabnisko_ime,ime,priimek,datum_rojstva)
-                VALUES (%s, %s, %s, %s)
+                (uporabnisko_ime,ime,priimek,datum_rojstva,drzavljanstvo,geslo,clanstvo,st_izleta)
+                VALUES (%s, %s, %s, %s, %s, %s,%s,%s)
             """, r)
             print("Uvožena oseba %s z uporabniškim imenom %s" % (r[1], r[0]))
     conn.commit()
@@ -40,3 +45,7 @@ def uvozi_podatke():
 
 conn = psycopg2.connect(database=auth.db, host=auth.host, user=auth.user, password=auth.password)
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) 
+
+pobrisi_tabelo()
+ustvari_tabelo()
+uvozi_podatke()
