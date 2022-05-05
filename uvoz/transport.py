@@ -10,7 +10,7 @@ import csv
 def ustvari_tabelo():
     cur.execute("""
         CREATE TABLE transport (
-            id SERIAL UNIQUE PRIMARY KEY,
+            id_transporta SERIAL PRIMARY KEY,
             vrsta_transporta TEXT NOT NULL,
             cena DECIMAL NOT NULL
             );
@@ -24,7 +24,7 @@ def pobrisi_tabelo():
     conn.commit()
 
 def uvozi_podatke():
-    with open("podatki/transport.csv", encoding="utf-16", errors='ignore') as f:
+    with open("podatki/transport.csv", encoding="utf-8", errors='ignore') as f:
         rd = csv.reader(f)
         next(rd) # izpusti naslovno vrstico
         for r in rd:
@@ -32,6 +32,7 @@ def uvozi_podatke():
                 INSERT INTO transport
                 (vrsta_transporta, cena)
                 VALUES (%s, %s)
+                RETURNING id_transporta
                 """, r)
             rid, = cur.fetchone()
             print("Uvožena vrsta transporta %s z ID-jem %d" % (r[0], rid))
