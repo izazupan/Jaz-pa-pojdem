@@ -1,101 +1,100 @@
-id,mesto,drzava
-1,Tongkiling,Indonesia
-2,Samdrup Jongkhar,Bhutan
-3,Barayong,Philippines
-4,Bogoria,Poland
-5,Havlíčkův Brod,Czech Republic
-6,Lewoeleng,Indonesia
-7,Seka,Thailand
-8,Yonggu,China
-9,Adir,Jordan
-10,Bęczarka,Poland
-11,Rejoso,Indonesia
-12,Kasingan,Indonesia
-13,Kolchikón,Greece
-14,Johor Bahru,Malaysia
-15,Ryūō,Japan
-16,Yanjiang,China
-17,Mondokan,Indonesia
-18,Changhe,China
-19,Harding,South Africa
-20,Yangon,Myanmar
-21,Старо Нагоричане,Macedonia
-22,Gunungsari,Indonesia
-23,Ivyanyets,Belarus
-24,Ad Dasmah,Kuwait
-25,Padaan,Indonesia
-26,Pantaihambawang,Indonesia
-27,Połajewo,Poland
-28,Changning,China
-29,Gomel,Belarus
-30,Cibulakan,Indonesia
-31,Baikouquan,China
-32,Jiuxian,China
-33,Kadugedong,Indonesia
-34,Ulricehamn,Sweden
-35,Remedios,Cuba
-36,Tochio-honchō,Japan
-37,Port-à-Piment,Haiti
-38,Victoria Falls,Zimbabwe
-39,Fengmen,China
-40,Yonghe,China
-41,Huangjing,China
-42,Kirs,Russia
-43,Xanxerê,Brazil
-44,Tijucas,Brazil
-45,Xiyang,China
-46,Al Fujayrah,United Arab Emirates
-47,Åstorp,Sweden
-48,Kladno,Czech Republic
-49,Qiaoshi,China
-50,Medina Estates,Ghana
-51,Kedungsinggil,Indonesia
-52,Congkar,Indonesia
-53,Simpang,Indonesia
-54,Lensk,Russia
-55,Trelleborg,Sweden
-56,Uruzgān,Afghanistan
-57,Aoqian,China
-58,Chagang,China
-59,Miguel Hidalgo,Mexico
-60,Jilong,China
-61,Tarnowskie Góry,Poland
-62,Oepula,Indonesia
-63,Jiaze,China
-64,Złotniki Kujawskie,Poland
-65,Nova Viçosa,Brazil
-66,Lisala,Democratic Republic of the Congo
-67,Dondon,Haiti
-68,Kauran,Philippines
-69,Xitianwei,China
-70,Pailin,Cambodia
-71,Pingshui,China
-72,Évreux,France
-73,Bludov,Czech Republic
-74,Shanghu,China
-75,Qiantang,China
-76,Lavezares,Philippines
-77,Billère,France
-78,Avlónas,Greece
-79,Shuangxing,China
-80,Pasirjaya,Indonesia
-81,Limón,Costa Rica
-82,Lenningen,Luxembourg
-83,Rezovac,Croatia
-84,Narutochō-mitsuishi,Japan
-85,Bijelo Polje,Montenegro
-86,Denov,Uzbekistan
-87,Kramfors,Sweden
-88,Ashiya,Japan
-89,Opatów,Poland
-90,Borås,Sweden
-91,Остров Пасхи,Chile
-92,Songjianghe,China
-93,Loudi,China
-94,Moncton,Canada
-95,Jundian,China
-96,Storozhynets’,Ukraine
-97,Ágios Týchon,Cyprus
-98,Florencio Varela,Argentina
-99,Göteborg,Sweden
-100,Suwaluh,Indonesia
+id,mesto,kratica_drzave
+1,Bopu,CN
+2,Kazlų Rūda,LT
+3,Tarkastad,ZA
+4,Sintansin,KR
+5,Takaoka,JP
+6,Tujing,CN
+7,Cosquín,AR
+8,Prince Albert,CA
+9,Sukahening,ID
+10,Loma Alta,MX
+11,Munggang,ID
+12,Gœsdorf,LU
+13,Aguazul,CO
+14,Pola,PH
+15,Yushikalasu,CN
+16,San Isidro,MX
+17,Guayabetal,CO
+18,Balayong,PH
+19,Barkā’,OM
+20,Verkhnyaya Khava,RU
+21,Metz,FR
+22,Agualva de Cima,PT
+23,K’ulashi,GE
+24,Seogeom-ri,KR
+25,Kloangpopot,ID
+26,Tlumačov,CZ
+27,Kalimati,ID
+28,Norwalk,US
+29,Perpignan,FR
+30,Dhali,CY
+31,Stockholm,SE
+32,Bairros,PT
+33,Quellouno,PE
+34,Datartua,ID
+35,Hargeysa,SO
+36,Colosó,CO
+37,Fencheng,CN
+38,Tarimbang,ID
+39,Le Blanc-Mesnil,FR
+40,Neglasari,ID
+41,Nankou,CN
+42,Sofrino,RU
+43,Zagreb - Centar,HR
+44,Requião,PT
+45,Łęczyce,PL
+46,Burgkirchen,AT
+47,Bolhrad,UA
+48,Vila Nova,PT
+49,Soufrière,LC
+50,Sundbyberg,SE
+51,Khirdalan,AZ
+52,Santa Rosa de Copán,HN
+53,Tselinnoye,RU
+54,Tekstil’shchiki,RU
+55,Cibingbin,ID
+56,Bansko,BG
+57,Pirg,AL
+58,Were Īlu,ET
+59,Ten’gushevo,RU
+60,Komes,ID
+61,Hongchuan,CN
+63,Oksa,PL
+64,Roshchino,RU
+65,Nīshābūr,IR
+66,Paltashaco,PE
+67,El Fahs,TN
+68,Mufumbwe,ZM
+69,Hayes,JM
+70,Schirmeck,FR
+71,Nankang,CN
+72,Liangjing,CN
+73,Espinal,CO
+74,Ejidal,MX
+75,Libertad,PH
+76,Toroy,ID
+77,Su-ngai Kolok,TH
+78,Viitasaari,FI
+79,Los Angeles,US
+80,White River,ZA
+81,Banggel,ID
+82,Gitega,BI
+83,Camachile,PH
+84,Dapitan,PH
+85,Chutove,UA
+86,Shihuiqiao,CN
+87,Cullhuas,PE
+88,Kebonkai,ID
+89,Plumtree,ZW
+90,Bayeux,BR
+91,Trollhättan,SE
+92,Tolkmicko,PL
+93,Jielong,CN
+94,Jinshanzui,CN
+95,Barwałd Średni,PL
+96,Patarrá,CR
+97,Donan,ID
+98,Jajarkrajan,ID
+99,Lubu,CN
+100,Xuetian,CN

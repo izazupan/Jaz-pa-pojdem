@@ -10,8 +10,9 @@ import csv
 def ustvari_tabelo():
     cur.execute("""
         CREATE TABLE mesto (
-            id SERIAL UNIQUE PRIMARY KEY,
-            ime_mesta TEXT NOT NULL
+            id NUMERIC PRIMARY KEY,
+            ime_mesta TEXT NOT NULL,
+            kratica_drzave TEXT NOT NULL REFERENCES drzava(kratica)
             );
     """)
     conn.commit()
@@ -23,21 +24,23 @@ def pobrisi_tabelo():
     conn.commit()
 
 def uvozi_podatke():
-    with open("podatki/mesta.csv", encoding="utf-16", errors='ignore') as f:
+    with open("podatki/mesto.csv", encoding="utf-8", errors='ignore') as f:
         rd = csv.reader(f)
         next(rd) # izpusti naslovno vrstico
         for r in rd:
             cur.execute("""
                 INSERT INTO mesto
-                (ime_mesta)
-                VALUES (%s)
+                (id, ime_mesta, kratica_drzave)
+                VALUES (%s, %s, %s)
                 """, r)
-            rid, = cur.fetchone()
-            print("Uvoženo mesto %s z ID-jem %d" % (r[0], rid))
+            # rid, = cur.fetchone()
+            print("Uvoženo mesto %s iz %s z ID-jem %s" % (r[1], r[2], r[0]))
     conn.commit()
 
 
 conn = psycopg2.connect(database=auth.db, host=auth.host, user=auth.user, password=auth.password)
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) 
 
-ustvari_tabelo()
+#pobrisi_tabelo()
+#ustvari_tabelo()
+#uvozi_podatke()
