@@ -1,0 +1,8 @@
+id_transporta,vrsta_transporta,cena_transporta
+10,avto,50
+11,avtobus,40
+12,ladja,90
+13,letalo,70
+14,taksi,100
+15,avtodom,80
+16,vlak,35
