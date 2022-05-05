@@ -10,7 +10,7 @@ import csv
 def ustvari_tabelo():
     cur.execute("""
         CREATE TABLE obisk (
-            st_izleta NUMERIC PRIMARY KEY,
+            st_izleta INTEGER PRIMARY KEY,
             st_dni NUMERIC NOT NULL,
             id_mesta NUMERIC REFERENCES mesto(id),
             id_namestitve INTEGER REFERENCES namestitev(id_namestitve),
@@ -44,5 +44,5 @@ conn = psycopg2.connect(database=auth.db, host=auth.host, user=auth.user, passwo
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) 
 
 #pobrisi_tabelo()
-ustvari_tabelo()
+#ustvari_tabelo()
 uvozi_podatke()

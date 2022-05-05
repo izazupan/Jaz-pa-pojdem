@@ -17,7 +17,7 @@ def ustvari_tabelo():
         drzavljanstvo TEXT REFERENCES drzava(kratica),
         geslo TEXT NOT NULL,
         clanstvo INTEGER REFERENCES skupina(id_skupine),
-        st_izleta NUMERIC REFERENCES obisk(st_izleta)
+        st_izleta INTEGER REFERENCES obisk(st_izleta)
     );
     """) 
     conn.commit()
@@ -46,6 +46,6 @@ def uvozi_podatke():
 conn = psycopg2.connect(database=auth.db, host=auth.host, user=auth.user, password=auth.password)
 cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor) 
 
-pobrisi_tabelo()
-ustvari_tabelo()
+#pobrisi_tabelo()
+#ustvari_tabelo()
 uvozi_podatke()
