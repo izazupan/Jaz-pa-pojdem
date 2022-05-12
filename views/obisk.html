@@ -1,0 +1,22 @@
+%rebase('osnova.html', naslov='Obisk')
+
+  <table cellpadding="0" cellspacing="0" border="1">
+  <tr>
+     <th>Št. izleta</th>
+     <th>Št. dni</th>
+     <th>Mesto</th>
+     <th>Država</th>
+     <th>Transport</th>
+     <th>Namestitev</th>
+  </tr>
+  %for (st_izleta,st_dni,ime_mesta,ime_drzave,vrsta_transporta,vrsta_namestitve) in obisk:
+    <tr>
+       <td>{{st_izleta}}</td>
+       <td>{{st_dni}}</td>
+       <td>{{ime_mesta}}</td>
+       <td>{{ime_drzave}}</td>
+       <td>{{vrsta_transporta}}</td>
+       <td>{{vrsta_namestitve}}</td>
+    </tr>
+  %end
+  </table>
