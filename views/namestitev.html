@@ -2,11 +2,13 @@
 
   <table cellpadding="0" cellspacing="0" border="1">
   <tr>
+     <th>Id</th>
      <th>Vrsta</th>
      <th>Cena</th>
   </tr>
-  %for (vrsta_namestitve,cena) in namestitev:
+  %for (id_namestitve,vrsta_namestitve,cena) in namestitev:
     <tr>
+       <td>{{id_namestitve}}</td>
        <td>{{vrsta_namestitve}}</td>
        <td>{{cena}}</td>
     </tr>

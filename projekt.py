@@ -45,25 +45,25 @@ def obiski():
 
 @get('/transport')
 def transport():
-    cur.execute("SELECT vrsta_transporta,cena FROM transport;")
+    cur.execute("SELECT * FROM transport;")
     return template('transport.html', transport=cur)
 
 @get('/dodaj_transport')
 def dodaj_transport():
-    return template('dodaj_transport.html', id_transporta='', vrsta='', cena='', napaka=None)
+    return template('dodaj_transport.html', id_transporta='', vrsta_transporta='', cena='', napaka=None)
 
 @post('/dodaj_transport')
 def dodaj_transport_post():
     id_transporta = request.forms.id_transporta
-    vrsta = request.forms.vrsta
+    vrsta_transporta = request.forms.vrsta_transporta
     cena = request.forms.cena
     try:
-        cur.execute("INSERT INTO transport (id_transporta, vrsta, cena) VALUES (%s, %s, %s)",
-                    (id_transporta, vrsta, cena))
+        cur.execute("INSERT INTO transport (id_transporta, vrsta_transporta, cena) VALUES (%s, %s, %s)",
+                    (id_transporta, vrsta_transporta, cena))
         conn.commit()
     except Exception as ex:
         conn.rollback()
-        return template('dodaj_transport.html', id_transporta=id_transporta, vrsta=vrsta, cena=cena,
+        return template('dodaj_transport.html', id_transporta=id_transporta, vrsta_transporta=vrsta_transporta, cena=cena,
                         napaka='Zgodila se je napaka: %s' % ex)
     redirect(url('/transport'))
   
@@ -71,7 +71,7 @@ def dodaj_transport_post():
 
 @get('/namestitev')
 def namestitev():
-    cur.execute("SELECT vrsta_namestitve,cena FROM namestitev;")
+    cur.execute("SELECT id_namestitve, vrsta_namestitve, cena FROM namestitev;")
     return template('namestitev.html', namestitev=cur)
 
 @get('/dodaj_namestitev')
