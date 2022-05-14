@@ -1,0 +1,12 @@
+%rebase('osnova.html', naslov='Dodajanje namestitve')
+
+%if napaka:
+  <p class="opozorilo">{{napaka}}</p>
+%end
+
+  <form action="{{url('dodaj_namestitev')}}" method="POST">
+    <p>ID namestitve: <input type="integer" name="id_namestitve" value="{{id_namestitve}}"></p>
+    <p>Vrsta: <input type="text" name="vrsta_namestitve" value="{{vrsta_namestitve}}"></p>
+    <p>Cena: <input type="numeric" name="cena" value="{{cena}}"></p>
+    <p><input type="submit" value="Dodaj"></p>
+  </form>

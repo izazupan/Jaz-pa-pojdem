@@ -1,0 +1,19 @@
+%rebase('osnova.html', naslov='Skupine')
+
+  <table cellpadding="0" cellspacing="0" border="1">
+  <tr>
+     <th>ID</th>
+     <th>Ime skupine</th>
+  </tr>
+  %for (id_skupine, ime_skupine) in skupine:
+    <tr>
+       <td>{{id_skupine}}</td>
+       <td>{{ime_skupine}}</td>
+    </tr>
+  %end
+  </table>
+
+  <p>
+    <a href="{{url('/dodaj_skupino')}}">Dodaj skupino</a>
+    <a href="{{url('clani_skupine', x=101)}}">Člani skupine</a>    
+  </p>

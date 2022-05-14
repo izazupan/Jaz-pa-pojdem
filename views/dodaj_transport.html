@@ -1,0 +1,12 @@
+%rebase('osnova.html', naslov='Dodajanje transporta')
+
+%if napaka:
+  <p class="opozorilo">{{napaka}}</p>
+%end
+
+  <form action="{{url('dodaj_transport')}}" method="POST">
+    <p>ID transporta: <input type="numeric" name="id_transporta" value="{{id_transporta}}"></p>
+    <p>Vrsta: <input type="text" name="vrsta" value="{{vrsta}}"></p>
+    <p>Cena: <input type="numeric" name="cena" value="{{cena}}"></p>
+    <p><input type="submit" value="Dodaj"></p>
+  </form>

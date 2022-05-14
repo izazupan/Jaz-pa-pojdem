@@ -1,0 +1,11 @@
+%rebase('osnova.html', naslov='Dodajanje skupine')
+
+%if napaka:
+  <p class="opozorilo">{{napaka}}</p>
+%end
+
+  <form action="{{url('/dodaj_skupino')}}" method="POST">
+    <p>ID skupine: <input type="numeric" name="id_skupine" value="{{id_skupine}}"></p>
+    <p>Ime skupine: <input type="text" name="ime_skupine" value="{{ime_skupine}}"></p>
+    <p><input type="submit" value="Dodaj"></p>
+  </form>

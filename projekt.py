@@ -27,7 +27,8 @@ def static(filename):
 
 @get('/')
 def index():
-    cur.execute("SELECT uporabnisko_ime,ime,priimek,datum_rojstva,drzavljanstvo,clanstvo,st_izleta FROM oseba ORDER BY priimek, ime")
+    cur.execute("""SELECT uporabnisko_ime,ime,priimek,datum_rojstva,drzavljanstvo,clanstvo,st_izleta 
+                FROM oseba ORDER BY priimek, ime""")
     return template('osebe.html', oseba=cur)
 
 @get('/obisk')
@@ -40,24 +41,88 @@ def obiski():
                 JOIN namestitev ON obisk.id_namestitve=namestitev.id_namestitve;""")
     return template('obisk.html', obisk=cur)
 
-#@get('/dodaj_transakcijo')
-#def dodaj_transakcijo():
-#    return template('dodaj_transakcijo.html', znesek='', racun='', opis='', napaka=None)
-#
-#@post('/dodaj_transakcijo')
-#def dodaj_transakcijo_post():
-#    znesek = request.forms.znesek
-#    racun = request.forms.racun
-#    opis = request.forms.opis
-#    try:
-#        cur.execute("INSERT INTO transakcija (znesek, racun, opis) VALUES (%s, %s, %s)",
-#                    (znesek, racun, opis))
-#        conn.commit()
-#    except Exception as ex:
-#        conn.rollback()
-#        return template('dodaj_transakcijo.html', znesek=znesek, racun=racun, opis=opis,
-#                        napaka='Zgodila se je napaka: %s' % ex)
-#    redirect(url('index'))
+# transport
+
+@get('/transport')
+def transport():
+    cur.execute("SELECT vrsta_transporta,cena FROM transport;")
+    return template('transport.html', transport=cur)
+
+@get('/dodaj_transport')
+def dodaj_transport():
+    return template('dodaj_transport.html', id_transporta='', vrsta='', cena='', napaka=None)
+
+@post('/dodaj_transport')
+def dodaj_transport_post():
+    id_transporta = request.forms.id_transporta
+    vrsta = request.forms.vrsta
+    cena = request.forms.cena
+    try:
+        cur.execute("INSERT INTO transport (id_transporta, vrsta, cena) VALUES (%s, %s, %s)",
+                    (id_transporta, vrsta, cena))
+        conn.commit()
+    except Exception as ex:
+        conn.rollback()
+        return template('dodaj_transport.html', id_transporta=id_transporta, vrsta=vrsta, cena=cena,
+                        napaka='Zgodila se je napaka: %s' % ex)
+    redirect(url('/transport'))
+  
+# namestitev
+
+@get('/namestitev')
+def namestitev():
+    cur.execute("SELECT vrsta_namestitve,cena FROM namestitev;")
+    return template('namestitev.html', namestitev=cur)
+
+@get('/dodaj_namestitev')
+def dodaj_namestitev():
+    return template('dodaj_namestitev.html', id_namestitve='', vrsta_namestitve='', cena='', napaka=None)
+
+@post('/dodaj_namestitev')
+def dodaj_namestitev_post():
+    id_namestitve = request.forms.id_namestitve
+    vrsta_namestitve = request.forms.vrsta_namestitve
+    cena = request.forms.cena
+    try:
+        cur.execute("INSERT INTO namestitev (id_namestitve, vrsta_namestitve, cena) VALUES (%s, %s, %s)",
+                    (id_namestitve, vrsta_namestitve, cena))
+        conn.commit()
+    except Exception as ex:
+        conn.rollback()
+        return template('dodaj_namestitev.html', id_namestitve=id_namestitve, vrsta_namestitve=vrsta_namestitve, cena=cena,
+                        napaka='Zgodila se je napaka: %s' % ex)
+    redirect(url('/namestitev'))
+
+# skupine
+
+@get('/skupine')
+def skupine():
+    cur.execute("SELECT id_skupine,ime_skupine FROM skupina;")
+    return template('skupine.html', skupine=cur)
+
+@get('/dodaj_skupino')
+def dodaj_skupino():
+    return template('dodaj_skupino.html', id_skupine='', ime_skupine='', napaka=None)
+
+@post('/dodaj_skupino')
+def ddodaj_skupino_post():
+    id_skupine = request.forms.id_skupine
+    ime_skupine = request.forms.ime_skupine
+    try:
+        cur.execute("INSERT INTO skupina (id_skupine, ime_skupine) VALUES (%s, %s)",
+                    (id_skupine, ime_skupine))
+        conn.commit()
+    except Exception as ex:
+        conn.rollback()
+        return template('dodaj_skupino.html', id_skupine=id_skupine, ime_skupine=ime_skupine,
+                        napaka='Zgodila se je napaka: %s' % ex)
+    redirect(url('/skupine'))
+
+@get('/clani_skupine/<x:int>/')
+def clani_skupine(x):
+    cur.execute("""SELECT uporabnisko_ime,ime,priimek,datum_rojstva,drzavljanstvo,clanstvo,st_izleta 
+                FROM oseba WHERE clanstvo = %s""", [x])
+    return template('clani_skupine.html', x=x, oseba=cur)
 
 ######################################################################
 # Glavni program
