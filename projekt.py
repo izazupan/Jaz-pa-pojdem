@@ -66,7 +66,19 @@ def dodaj_transport_post():
         return template('dodaj_transport.html', id_transporta=id_transporta, vrsta_transporta=vrsta_transporta, cena=cena,
                         napaka='Zgodila se je napaka: %s' % ex)
     redirect(url('/transport'))
-  
+
+@post('/brisi_transport') 
+def brisi_transport():
+    id_transporta = request.forms.id_transporta
+    try:
+        cur.execute("DELETE FROM transport WHERE id_transporta = %s", [id_transporta])
+        conn.commit()
+    except Exception as ex:
+        conn.rollback()
+        return template('transport.html', id_transporta=id_transporta,
+                        napaka='Zgodila se je napaka: %s' % ex)
+    redirect(url('/transport'))
+
 # namestitev
 
 @get('/namestitev')

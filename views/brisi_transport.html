@@ -1,0 +1,10 @@
+%rebase('osnova.html', naslov='Brisanje transporta')
+
+%if napaka:
+  <p class="opozorilo">{{napaka}}</p>
+%end
+
+  <form action="{{url('brisi_transport')}}" method="POST">
+    <p>ID transporta: <input type="numeric" name="id_transporta" value="{{id_transporta}}"></p>
+    <p><input type="submit" value="Briši"></p>
+  </form>
