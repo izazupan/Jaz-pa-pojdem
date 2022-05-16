@@ -12,6 +12,8 @@ import psycopg2, psycopg2.extensions, psycopg2.extras
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE) # se znebimo problemov s šumniki
 
 import os
+import hashlib
+import bottle
 
 # privzete nastavitve
 SERVER_PORT = os.environ.get('BOTTLE_PORT', 8080)
@@ -21,6 +23,17 @@ DB_PORT = os.environ.get('POSTGRES_PORT', 5432)
 # odkomentiraj, če želiš sporočila o napakah
 debug = True
 
+skrivnost = "rODX3ulHw3ZYRdbIVcp1IfJTDn8iQTH6TFaNBgrSkjIulr"
+
+def nastaviSporocilo(sporocilo = None):
+    # global napakaSporocilo
+    staro = request.get_cookie("sporocilo", secret=skrivnost)
+    if sporocilo is None:
+        bottle.Response.delete_cookie(key='sporocilo', path='/', secret=skrivnost)
+    else:
+        bottle.Response.set_cookie(key='sporocilo', value=sporocilo, path="/", secret=skrivnost)
+    return staro 
+
 @get('/static/<filename:path>')
 def static(filename):
     return static_file(filename, root='static')
@@ -29,6 +42,91 @@ def static(filename):
 @get('/')
 def hello():
     return print("Začetna stran")
+
+##########################
+# prijava, registracija, odjava
+
+def hashGesla(s):
+    m = hashlib.sha256()
+    m.update(s.encode("utf-8"))
+    return m.hexdigest()
+
+@get('/registracija')
+def registracija_get():
+    napaka = nastaviSporocilo()
+    return template('registracija.html', napaka=napaka)
+
+@post('/registracija')
+def registracija_post():
+    uporabnisko_ime = request.forms.uporabnisko_ime
+    geslo = request.forms.geslo
+    geslo2 = request.forms.geslo2
+    if uporabnisko_ime is None or geslo is None or geslo2 is None:
+        nastaviSporocilo('Registracija ni možna') 
+        redirect('/registracija')
+        return
+    oseba = cur 
+    uporabnik = None
+    try: 
+        uporabnik = cur.execute("SELECT * FROM oseba WHERE uporabnisko_ime = ?", [uporabnisko_ime])
+    except:
+        uporabnik = None
+    if uporabnik is None:
+        nastaviSporocilo('Registracija ni možna') 
+        redirect('/registracija')
+        return
+    if len(geslo) < 4:
+        nastaviSporocilo('Geslo mora imeti vsaj 4 znake.') 
+        redirect('/registracija')
+        return
+    if geslo != geslo2:
+        nastaviSporocilo('Gesli se ne ujemata.') 
+        redirect('/registracija')
+        return
+    zgostitev = hashGesla(geslo)
+    cur.execute("UPDATE oseba SET uporabnisko_ime = ?, geslo = ? WHERE uporabnisko_ime = ?", (uporabnisko_ime, zgostitev))
+    bottle.Response.set_cookie(key='uporabnisko_ime', value=uporabnisko_ime, path='/', secret=skrivnost)
+    redirect('/osebe')
+
+
+@get('/prijava')
+def prijava_get():
+    return template('prijava.html')
+
+@post('/prijava')
+def prijava_post():
+    uporabnisko_ime = request.forms.uporabnisko_ime
+    geslo = request.forms.geslo
+    if uporabnisko_ime is None or geslo is None:
+        nastaviSporocilo('Uporabniško ima in geslo morata biti neprazna') 
+        redirect('/prijava')
+        return
+    oseba = cur   
+    hashBaza = None
+    try: 
+        hashBaza = cur.execute("SELECT geslo FROM oseba WHERE uporabnisko_ime = %s", [uporabnisko_ime])
+        hashBaza = hashBaza[0]
+    except:
+        hashBaza = None
+    if hashBaza is None:
+        nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
+        redirect('/prijava')
+        return
+    if hashGesla(geslo) != hashBaza:
+        nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
+        redirect('/prijava')
+        return
+    bottle.Response.set_cookie(key='uporabnisko_ime', value=uporabnisko_ime, secret=skrivnost)
+    redirect('/komitenti')
+    
+@get('/odjava')
+def odjava_get():
+    bottle.Response.delete_cookie(key='uporabnisko_ime')
+    redirect('/prijava')
+
+
+##################################
+
 
 # osebe
 
@@ -116,7 +214,7 @@ def uredi_transport_post():
 
 @get('/namestitev')
 def namestitev():
-    cur.execute("SELECT id_namestitve, vrsta_namestitve, cena FROM namestitev;")
+    cur.execute("SELECT * FROM namestitev ORDER BY id_namestitve;")
     return template('namestitev.html', namestitev=cur)
 
 @get('/dodaj_namestitev')
@@ -135,6 +233,25 @@ def dodaj_namestitev_post():
     except Exception as ex:
         conn.rollback()
         return template('dodaj_namestitev.html', id_namestitve=id_namestitve, vrsta_namestitve=vrsta_namestitve, cena=cena,
+                        napaka='Zgodila se je napaka: %s' % ex)
+    redirect(url('/namestitev'))
+
+@get('/uredi_namestitev')
+def uredi_namestitev():
+    return template('uredi_namestitev.html', id_namestitve='', vrsta_namestitve='', cena='', napaka=None)
+
+@post('/uredi_namestitev')
+def uredi_namestitev_post():
+    id_namestitve = request.forms.id_namestitve
+    vrsta_namestitve = request.forms.vrsta_namestitve
+    cena = request.forms.cena
+    try:
+        cur.execute("UPDATE namestitev SET vrsta_namestitve=%s, cena=%s WHERE id_namestitve=%s",
+                    (vrsta_namestitve, cena, id_namestitve))
+        conn.commit()
+    except Exception as ex:
+        conn.rollback()
+        return template('uredi_namestitev.html', id_namestitve=id_namestitve, vrsta_namestitve=vrsta_namestitve, cena=cena,
                         napaka='Zgodila se je napaka: %s' % ex)
     redirect(url('/namestitev'))
 

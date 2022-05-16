@@ -1,12 +1,71 @@
+% zavihki = [
+%     'osebe',
+%     'obisk',
+%     'transport',
+%     'namestitev',
+%     'skupine'   
+% ]
+% oznaka_zavihka = {
+%     'osebe': 'Osebe',
+%     'obisk': 'Obisk',
+%     'transport': 'Transport',
+%     'namestitev': 'Namestitev',
+%     'skupine': 'Skupine'
+% }
+
 <html>
 <head>
-  <title>{{naslov}}</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  % if defined('izbrani_zavihek'):
+  <title>Jaz pa pojdem - {{oznaka_zavihka[izbrani_zavihek]}}</title>
+  % else:
+  <title>Jaz pa pojdem</title>
+  % end
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.2/css/bulma.min.css"> 
   <link href="{{url('static', filename='style.css')}}" rel="stylesheet">
 </head>
+
 <body>
-  <h2>{{naslov}}</h2>
+  <nav class="navbar is-light">
+    <div class="container">
+      <div class="navbar-brand">
+        <span class="navbar-item">
+          <strong>Jaz pa pojdem</strong>
+        </span>
+      </div>
+      <div class="navbar-start">
+        % if defined('izbrani_zavihek'):
+          % for zavihek in zavihki:
+          % if zavihek == izbrani_zavihek:
+            <a class="navbar-item is-active" href="{{zavihek}}">
+          % else:
+            <a class="navbar-item" href="{{zavihek}}">
+          % end
+          <span>{{oznaka_zavihka[zavihek]}}</span>
+          </a>
+          % end
+        % end
+      </div>      
+      % if defined('izbrani_zavihek'):
+      <div class="navbar-end">
+        <span>
+          <form method="POST" action="/odjava/">
+            <input type="submit" value="odjavi me">
+          </form>
+        </span>
+      </div>
+      % end
+    </div>
+  </nav>
+  <section class="section">
+    {{!base}}
+  </section>
 
-{{!base}}
-
+  <footer class="footer primary">
+    OPB - Iza Čebulj, Neža Lesnjak
+  </footer>
+  
 </body>
+
 </html>
