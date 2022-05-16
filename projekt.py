@@ -25,11 +25,20 @@ debug = True
 def static(filename):
     return static_file(filename, root='static')
 
+#začetno stran je treba še popraviti
 @get('/')
+def hello():
+    return print("Začetna stran")
+
+# osebe
+
+@get('/osebe')
 def index():
     cur.execute("""SELECT uporabnisko_ime,ime,priimek,datum_rojstva,drzavljanstvo,clanstvo,st_izleta 
                 FROM oseba ORDER BY priimek, ime""")
     return template('osebe.html', oseba=cur)
+
+# obiski
 
 @get('/obisk')
 def obiski():
@@ -45,7 +54,7 @@ def obiski():
 
 @get('/transport')
 def transport():
-    cur.execute("SELECT * FROM transport;")
+    cur.execute("SELECT * FROM transport ORDER BY id_transporta;")
     return template('transport.html', transport=cur)
 
 @get('/dodaj_transport')
@@ -67,17 +76,41 @@ def dodaj_transport_post():
                         napaka='Zgodila se je napaka: %s' % ex)
     redirect(url('/transport'))
 
-@post('/brisi_transport') 
-def brisi_transport():
+@get('/uredi_transport')
+def uredi_transport():
+    return template('uredi_transport.html', id_transporta='', vrsta_transporta='', cena='', napaka=None)
+
+@post('/uredi_transport')
+def uredi_transport_post():
     id_transporta = request.forms.id_transporta
+    vrsta_transporta = request.forms.vrsta_transporta
+    cena = request.forms.cena
     try:
-        cur.execute("DELETE FROM transport WHERE id_transporta = %s", [id_transporta])
+        cur.execute("UPDATE transport SET vrsta_transporta=%s, cena=%s WHERE id_transporta=%s",
+                    (vrsta_transporta, cena, id_transporta))
         conn.commit()
     except Exception as ex:
         conn.rollback()
-        return template('transport.html', id_transporta=id_transporta,
+        return template('uredi_transport.html', id_transporta=id_transporta, vrsta_transporta=vrsta_transporta, cena=cena,
                         napaka='Zgodila se je napaka: %s' % ex)
     redirect(url('/transport'))
+
+# @get('/brisi_transport/<id_transporta>/')
+# def brisi_transport(id_transporta):
+#     cur.execute("""SELECT * FROM transport WHERE id_transporta = %s""", [id_transporta])
+#     return template('transport.html', id_transporta=id_transporta, transport=cur)
+# 
+# @post('/brisi_transport/<id_transporta>') 
+# def brisi_transport_post(id_transporta):
+#     id_transporta = request.forms.id_transporta
+#     try:
+#         cur.execute("DELETE FROM transport WHERE id_transporta = %s", [id_transporta])
+#         conn.commit()
+#     except Exception as ex:
+#         conn.rollback()
+#         return template('transport.html', id_transporta=id_transporta,
+#                         napaka='Zgodila se je napaka: %s' % ex)
+#     redirect(url('/transport'))
 
 # namestitev
 
@@ -109,7 +142,7 @@ def dodaj_namestitev_post():
 
 @get('/skupine')
 def skupine():
-    cur.execute("SELECT id_skupine,ime_skupine FROM skupina;")
+    cur.execute("SELECT * FROM skupina ORDER BY id_skupine;")
     return template('skupine.html', skupine=cur)
 
 @get('/dodaj_skupino')
@@ -135,6 +168,24 @@ def clani_skupine(x):
     cur.execute("""SELECT uporabnisko_ime,ime,priimek,datum_rojstva,drzavljanstvo,clanstvo,st_izleta 
                 FROM oseba WHERE clanstvo = %s""", [x])
     return template('clani_skupine.html', x=x, oseba=cur)
+
+@get('/uredi_skupino')
+def uredi_skupino():
+    return template('uredi_skupino.html', id_skupine='', ime_skupine='', napaka=None)
+
+@post('/uredi_skupino')
+def uredi_skupino_post():
+    id_skupine = request.forms.id_skupine
+    ime_skupine = request.forms.ime_skupine
+    try:
+        cur.execute("UPDATE skupina SET ime_skupine=%s WHERE id_skupine=%s",
+                    (ime_skupine, id_skupine))
+        conn.commit()
+    except Exception as ex:
+        conn.rollback()
+        return template('uredi_skupino.html', id_skupine=id_skupine, ime_skupine=ime_skupine,
+                        napaka='Zgodila se je napaka: %s' % ex)
+    redirect(url('/skupine'))
 
 ######################################################################
 # Glavni program
