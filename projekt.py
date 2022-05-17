@@ -28,10 +28,10 @@ skrivnost = "rODX3ulHw3ZYRdbIVcp1IfJTDn8iQTH6TFaNBgrSkjIulr"
 def nastaviSporocilo(sporocilo = None):
     # global napakaSporocilo
     staro = request.get_cookie("sporocilo", secret=skrivnost)
-    if sporocilo is None:
-        bottle.Response.delete_cookie(key='sporocilo', path='/', secret=skrivnost)
-    else:
-        bottle.Response.set_cookie(key='sporocilo', value=sporocilo, path="/", secret=skrivnost)
+#    if sporocilo is None:
+#        bottle.Response.delete_cookie(key='sporocilo', path='/', secret=skrivnost)
+#    else:
+#        bottle.Response.set_cookie(key='sporocilo', value=sporocilo, path="/", secret=skrivnost)
     return staro 
 
 @get('/static/<filename:path>')
@@ -61,6 +61,9 @@ def registracija_post():
     uporabnisko_ime = request.forms.uporabnisko_ime
     geslo = request.forms.geslo
     geslo2 = request.forms.geslo2
+    ime = request.forms.ime
+    priimek = request.forms.priimek
+    datum_rojstva = request.forms.datum_rojstva
     if uporabnisko_ime is None or geslo is None or geslo2 is None:
         nastaviSporocilo('Registracija ni možna') 
         redirect('/registracija')
@@ -84,7 +87,9 @@ def registracija_post():
         redirect('/registracija')
         return
     zgostitev = hashGesla(geslo)
-    cur.execute("UPDATE oseba SET uporabnisko_ime = ?, geslo = ? WHERE uporabnisko_ime = ?", (uporabnisko_ime, zgostitev))
+    cur.execute("""INSERT INTO oseba
+                (uporabnisko_ime,ime,priimek,datum_rojstva,geslo)
+                VALUES (%s, %s, %s, %s, %s)""", (uporabnisko_ime,ime,priimek,datum_rojstva, zgostitev))
     bottle.Response.set_cookie(key='uporabnisko_ime', value=uporabnisko_ime, path='/', secret=skrivnost)
     redirect('/osebe')
 
