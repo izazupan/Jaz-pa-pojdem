@@ -1,20 +1,25 @@
-%rebase('osnova.html', izbrani_zavihek='skupine')
+% rebase('osnova.html', izbrani_zavihek='skupine')
+
+% include('orodna_vrstica.html', povezava1='/uredi_skupino', napis1="Uredi skupino", povezava2='/dodaj_skupino', napis2="Dodaj skupino")
 
   <table cellpadding="0" cellspacing="0" border="1">
   <tr>
      <th>ID</th>
      <th>Ime skupine</th>
+     <th>Oglej si ...</th>
   </tr>
   %for (id_skupine, ime_skupine) in skupine:
     <tr>
        <td>{{id_skupine}}</td>
        <td>{{ime_skupine}}</td>
+       <td>
+         <div>
+           <form action="clani_skupine/{{id_skupine}}" method="get">
+             <a href="{{url('clani_skupine', x=id_skupine)}}" onclick="this.parentElement.submit()">... člane skupine {{id_skupine}}</a>
+           </form>
+         </div>
+       </td>
+      
     </tr>
   %end
   </table>
-
-  <p>
-    <a href="{{url('/dodaj_skupino')}}">Dodaj skupino</a>
-    <a href="{{url('/uredi_skupino')}}">Uredi skupino</a>
-    <a href="{{url('clani_skupine', x=101)}}">Člani skupine</a>    
-  </p>

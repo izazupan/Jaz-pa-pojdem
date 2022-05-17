@@ -41,7 +41,8 @@ def static(filename):
 #začetno stran je treba še popraviti
 @get('/')
 def hello():
-    return print("Začetna stran")
+#    return 'Začetna stran'
+    return template('zacetna_stran.html')
 
 ##########################
 # prijava, registracija, odjava
@@ -272,7 +273,7 @@ def dodaj_skupino():
     return template('dodaj_skupino.html', id_skupine='', ime_skupine='', napaka=None)
 
 @post('/dodaj_skupino')
-def ddodaj_skupino_post():
+def dodaj_skupino_post():
     id_skupine = request.forms.id_skupine
     ime_skupine = request.forms.ime_skupine
     try:
