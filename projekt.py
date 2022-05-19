@@ -37,6 +37,20 @@ def nastaviSporocilo(sporocilo = None):
 def static(filename):
     return static_file(filename, root='static')
 
+def preveriUporabnika(): 
+    uporabnisko_ime = request.get_cookie("uporabnisko_ime", secret=skrivnost)
+    if uporabnisko_ime:
+       # cur = baza.cursor()    
+        uporabnik = None
+        try: 
+            cur.execute("SELECT * FROM oseba WHERE uporabnisko_ime = %s", [uporabnisko_ime])
+            uporabnik = cur.fetchone()
+        except:
+            uporabnik = None
+        if uporabnik: 
+            return uporabnik
+    redirect('/prijava')
+
 ##########################
 # začetna stran
 @get('/')
@@ -147,6 +161,9 @@ def odjava_get():
 
 @get('/osebe')
 def osebe():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     cur.execute("""SELECT uporabnisko_ime,ime,priimek,datum_rojstva,drzavljanstvo,clanstvo,st_izleta 
                 FROM oseba ORDER BY priimek, ime""")
     return template('osebe.html', oseba=cur)
@@ -155,6 +172,9 @@ def osebe():
 
 @get('/obisk')
 def obisk():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     cur.execute("""SELECT st_izleta,st_dni,ime_mesta,ime_drzave,vrsta_transporta,vrsta_namestitve
                 FROM obisk
                 JOIN mesto ON obisk.id_mesta=mesto.id
@@ -167,15 +187,24 @@ def obisk():
 
 @get('/transport')
 def transport():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     cur.execute("SELECT * FROM transport ORDER BY id_transporta;")
     return template('transport.html', transport=cur)
 
 @get('/dodaj_transport')
 def dodaj_transport():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     return template('dodaj_transport.html', id_transporta='', vrsta_transporta='', cena='', napaka=None)
 
 @post('/dodaj_transport')
 def dodaj_transport_post():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     id_transporta = request.forms.id_transporta
     vrsta_transporta = request.forms.vrsta_transporta
     cena = request.forms.cena
@@ -195,10 +224,16 @@ def najdi_id_transporta():
 
 @get('/uredi_transport')
 def uredi_transport():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     return template('uredi_transport.html', id_transporta='', vrsta_transporta='', cena='', napaka=None, transporti=najdi_id_transporta())
 
 @post('/uredi_transport')
 def uredi_transport_post():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     id_transporta = request.forms.id_transporta
     vrsta_transporta = request.forms.vrsta_transporta
     cena = request.forms.cena
@@ -216,15 +251,24 @@ def uredi_transport_post():
 
 @get('/namestitev')
 def namestitev():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     cur.execute("SELECT * FROM namestitev ORDER BY id_namestitve;")
     return template('namestitev.html', namestitev=cur)
 
 @get('/dodaj_namestitev')
 def dodaj_namestitev():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     return template('dodaj_namestitev.html', id_namestitve='', vrsta_namestitve='', cena='', napaka=None)
 
 @post('/dodaj_namestitev')
 def dodaj_namestitev_post():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     id_namestitve = request.forms.id_namestitve
     vrsta_namestitve = request.forms.vrsta_namestitve
     cena = request.forms.cena
@@ -244,10 +288,16 @@ def najdi_id_namestitve():
 
 @get('/uredi_namestitev')
 def uredi_namestitev():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     return template('uredi_namestitev.html', id_namestitve='', vrsta_namestitve='', cena='', napaka=None, namestitve = najdi_id_namestitve())
 
 @post('/uredi_namestitev')
 def uredi_namestitev_post():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     id_namestitve = request.forms.id_namestitve
     vrsta_namestitve = request.forms.vrsta_namestitve
     cena = request.forms.cena
@@ -265,15 +315,24 @@ def uredi_namestitev_post():
 
 @get('/skupine')
 def skupine():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     cur.execute("SELECT * FROM skupina ORDER BY id_skupine;")
     return template('skupine.html', skupine=cur)
 
 @get('/dodaj_skupino')
 def dodaj_skupino():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     return template('dodaj_skupino.html', id_skupine='', ime_skupine='', napaka=None)
 
 @post('/dodaj_skupino')
 def dodaj_skupino_post():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     id_skupine = request.forms.id_skupine
     ime_skupine = request.forms.ime_skupine
     try:
@@ -288,6 +347,9 @@ def dodaj_skupino_post():
 
 @get('/clani_skupine/<x:int>/')
 def clani_skupine(x):
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     cur.execute("""SELECT uporabnisko_ime,ime,priimek,datum_rojstva,drzavljanstvo,clanstvo,st_izleta 
                 FROM oseba WHERE clanstvo = %s""", [x])
     return template('clani_skupine.html', x=x, oseba=cur)
@@ -298,10 +360,16 @@ def najdi_id_skupine():
 
 @get('/uredi_skupino')
 def uredi_skupino():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     return template('uredi_skupino.html', id_skupine='', ime_skupine='', napaka=None, skupine = najdi_id_skupine())
 
 @post('/uredi_skupino')
 def uredi_skupino_post():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
     id_skupine = request.forms.id_skupine
     ime_skupine = request.forms.ime_skupine
     try:

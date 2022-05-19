@@ -6,6 +6,7 @@ import psycopg2, psycopg2.extensions, psycopg2.extras
 psycopg2.extensions.register_type(psycopg2.extensions.UNICODE) # se znebimo problemov s šumniki
 
 import csv
+import hashlib
 
 def ustvari_tabelo():
     cur.execute("""
@@ -48,4 +49,21 @@ cur = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
 #pobrisi_tabelo()
 #ustvari_tabelo()
-uvozi_podatke()
+#uvozi_podatke()
+
+def hashGesla(s):
+    m = hashlib.sha256()
+    m.update(s.encode("utf-8"))
+    return m.hexdigest()
+
+def zgosti():
+     cur.execute("SELECT geslo FROM oseba;")
+     gesla = cur.fetchall()
+     for geslo in gesla:
+         geslo1 = hashGesla(geslo)
+         cur.execute("UPDATE oseba SET geslo=%s WHERE geslo=%s", [geslo1,geslo])
+         conn.commit()
+         print('spremenjeno')
+     return 
+
+zgosti()
