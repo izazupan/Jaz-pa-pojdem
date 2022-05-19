@@ -2,7 +2,7 @@
 # -*- encoding: utf-8 -*-
 
 # uvozimo bottle.py
-from bottleext import get, post, run, request, template, redirect, static_file, url
+from bottleext import get, post, run, request, template, redirect, static_file, url, response
 
 # uvozimo ustrezne podatke za povezavo
 import auth_public as auth
@@ -13,7 +13,6 @@ psycopg2.extensions.register_type(psycopg2.extensions.UNICODE) # se znebimo prob
 
 import os
 import hashlib
-import bottle
 
 # privzete nastavitve
 SERVER_PORT = os.environ.get('BOTTLE_PORT', 8080)
@@ -72,26 +71,32 @@ def registracija_post():
     oseba = cur 
     uporabnik = None
     try: 
-        uporabnik = cur.execute("SELECT * FROM oseba WHERE uporabnisko_ime = ?", [uporabnisko_ime])
+        cur.execute("SELECT * FROM oseba WHERE uporabnisko_ime = %s", [uporabnisko_ime])
+        uporabnik = cur.fetchone()
     except:
         uporabnik = None
-    if uporabnik is None:
+    if uporabnik is not None:
         nastaviSporocilo('Registracija ni možna') 
+        print('uporabnik obstaja')
         redirect('/registracija')
         return
     if len(geslo) < 4:
         nastaviSporocilo('Geslo mora imeti vsaj 4 znake.') 
+        print('prekratko geslo')
         redirect('/registracija')
         return
     if geslo != geslo2:
-        nastaviSporocilo('Gesli se ne ujemata.') 
+        nastaviSporocilo('Gesli se ne ujemata.')
+        print('različni gesli') 
         redirect('/registracija')
         return
     zgostitev = hashGesla(geslo)
     cur.execute("""INSERT INTO oseba
                 (uporabnisko_ime,ime,priimek,datum_rojstva,geslo)
                 VALUES (%s, %s, %s, %s, %s)""", (uporabnisko_ime,ime,priimek,datum_rojstva, zgostitev))
-    bottle.Response.set_cookie(key='uporabnisko_ime', value=uporabnisko_ime, path='/', secret=skrivnost)
+    conn.commit()
+    print('uspešna registracija')
+    request.set_cookie('uporabnisko_ime', uporabnisko_ime, path='/', secret=skrivnost)
     redirect('/osebe')
 
 
@@ -105,30 +110,34 @@ def prijava_post():
     geslo = request.forms.geslo
     if uporabnisko_ime is None or geslo is None:
         nastaviSporocilo('Uporabniško ima in geslo morata biti neprazna') 
+        print('izpolni vse')
         redirect('/prijava')
         return
     oseba = cur   
     hashBaza = None
     try: 
-        hashBaza = cur.execute("SELECT geslo FROM oseba WHERE uporabnisko_ime = %s", [uporabnisko_ime])
-        hashBaza = hashBaza[0]
+        cur.execute("SELECT geslo FROM oseba WHERE uporabnisko_ime = %s", [uporabnisko_ime])
+        hashBaza, = cur.fetchone()
     except:
         hashBaza = None
     if hashBaza is None:
         nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
+        print('se ne ujema')
         redirect('/prijava')
         return
     if hashGesla(geslo) != hashBaza:
         nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
+        print('neustrezno')
         redirect('/prijava')
         return
-    bottle.Response.set_cookie(key='uporabnisko_ime', value=uporabnisko_ime, secret=skrivnost)
-    redirect('/komitenti')
+    response.set_cookie('uporabnisko_ime', uporabnisko_ime, secret=skrivnost)
+    print('Uspešna prijava')
+    redirect('/osebe')
     
 @get('/odjava')
 def odjava_get():
-    bottle.Response.delete_cookie(key='uporabnisko_ime')
-    redirect('/prijava')
+    response.delete_cookie(key='uporabnisko_ime')
+    redirect(url('prijava_get'))
 
 
 ##################################
@@ -178,7 +187,7 @@ def dodaj_transport_post():
         conn.rollback()
         return template('dodaj_transport.html', id_transporta=id_transporta, vrsta_transporta=vrsta_transporta, cena=cena,
                         napaka='Zgodila se je napaka: %s' % ex)
-    redirect(url('/transport'))
+    redirect(url('transport'))
 
 @get('/uredi_transport')
 def uredi_transport():
@@ -197,7 +206,7 @@ def uredi_transport_post():
         conn.rollback()
         return template('uredi_transport.html', id_transporta=id_transporta, vrsta_transporta=vrsta_transporta, cena=cena,
                         napaka='Zgodila se je napaka: %s' % ex)
-    redirect(url('/transport'))
+    redirect(url('transport'))
 
 # @get('/brisi_transport/<id_transporta>/')
 # def brisi_transport(id_transporta):
@@ -240,11 +249,15 @@ def dodaj_namestitev_post():
         conn.rollback()
         return template('dodaj_namestitev.html', id_namestitve=id_namestitve, vrsta_namestitve=vrsta_namestitve, cena=cena,
                         napaka='Zgodila se je napaka: %s' % ex)
-    redirect(url('/namestitev'))
+    redirect(url('namestitev'))
+
+def najdi_id_namestitve():
+    cur.execute("SELECT id_namestitve,vrsta_namestitve FROM namestitev;")
+    return cur.fetchall()
 
 @get('/uredi_namestitev')
 def uredi_namestitev():
-    return template('uredi_namestitev.html', id_namestitve='', vrsta_namestitve='', cena='', napaka=None)
+    return template('uredi_namestitev.html', id_namestitve='', vrsta_namestitve='', cena='', napaka=None, namestitve = najdi_id_namestitve())
 
 @post('/uredi_namestitev')
 def uredi_namestitev_post():
@@ -258,8 +271,8 @@ def uredi_namestitev_post():
     except Exception as ex:
         conn.rollback()
         return template('uredi_namestitev.html', id_namestitve=id_namestitve, vrsta_namestitve=vrsta_namestitve, cena=cena,
-                        napaka='Zgodila se je napaka: %s' % ex)
-    redirect(url('/namestitev'))
+                        napaka='Zgodila se je napaka: %s' % ex, namestitve = najdi_id_namestitve())
+    redirect(url('namestitev'))
 
 # skupine
 
