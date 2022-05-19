@@ -6,8 +6,36 @@
 %end
 
   <form action="{{url('dodaj_namestitev')}}" method="POST">
-    <p>ID namestitve: <input type="integer" name="id_namestitve" value="{{id_namestitve}}"></p>
-    <p>Vrsta: <input type="text" name="vrsta_namestitve" value="{{vrsta_namestitve}}"></p>
-    <p>Cena: <input type="numeric" name="cena" value="{{cena}}"></p>
-    <p><input type="submit" value="Dodaj"></p>
+    <div class="form-row">
+      <div class="form-group col-md-3">
+        <label for="id_namestitve">ID nove namestitve:</label>
+        <input id="id_namestitve" name="id_namestitve" type="integer" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-5">
+        <label for="vrsta">Vrsta:</label>
+        <input id="vrsta" name="vrsta" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-3">
+        <label for="cena">Cena:</label>
+        <input id="cena" name="cena" type="integer" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+    </div>
+    <div class="form-row col">
+      <button class="btn btn-info" type="submit">
+        Dodaj novo namestitev
+      </button>
+    </div>
   </form>

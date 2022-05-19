@@ -5,8 +5,33 @@
   <p class="opozorilo">{{napaka}}</p>
 %end
 
-  <form action="{{url('/uredi_skupino')}}" method="POST">
-    <p>ID skupine: <input type="numeric" name="id_skupine" value="{{id_skupine}}"></p>
-    <p>Ime skupine: <input type="text" name="ime_skupine" value="{{ime_skupine}}"></p>
-    <p><input type="submit" value="Uredi"></p>
-  </form>
+<form action="{{url('uredi_skupino')}}" method="POST">
+  <div class="form-row">
+    <div class="form-group col-md-3">
+      <label for="id_skupine">Skupina:</label>
+      <select name="id_skupine" id="id_skupine"
+        type="integer" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        >
+      % for id,ime in skupine:
+          <option value='{{id}}' {{'selected' if id==id_skupine else ''}}>{{ime}}</option>
+      % end  
+    </select>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-5">
+      <label for="ime_skupine">Novo ime skupine:</label>
+      <input id="ime_skupine" name="ime_skupine" type="text" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
+    </div>
+  </div>
+  <div class="form-row col">
+    <button class="btn btn-info" type="submit">
+      Uredi
+    </button>
+  </div>
+</form>

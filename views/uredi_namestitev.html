@@ -6,22 +6,41 @@
 %end
 
   <form action="{{url('uredi_namestitev')}}" method="POST">
-    <p>Stara vrsta namestitve:
-      <select name="id_namestitve" id="id_namestitve">
+    <div class="form-row">
+      <div class="form-group col-md-3">
+        <label for="id_namestitve">Vrsta namestitve:</label>
+        <select name="id_namestitve" id="id_namestitve"
+          type="integer" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          >
         % for id,vrsta in namestitve:
             <option value='{{id}}' {{'selected' if id==id_namestitve else ''}}>{{vrsta}}</option>
         % end  
       </select>
-    </p>
-    <p>Nova vrsta: <input type="text" name="vrsta_namestitve" value="{{vrsta_namestitve}}"            
-      oninput="this.setCustomValidity('')"
-      oninvalid="this.setCustomValidity('Obvezno polje')"/>
-    </p>
-    <p>Cena: <input type="numeric" name="cena" value="{{cena}}"
-      oninput="this.setCustomValidity('')"
-      oninvalid="this.setCustomValidity('Obvezno polje')"/>
-    </p>
-    <p><input type="submit" value="Uredi"></p>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-5">
+        <label for="vrsta_namestitve">Nova vrsta namestitve:</label>
+        <input id="vrsta_namestitve" name="vrsta_namestitve" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-3">
+        <label for="cena">Cena:</label>
+        <input id="cena" name="cena" type="integer" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+    </div>
+    <div class="form-row col">
+      <button class="btn btn-info" type="submit">
+        Uredi
+      </button>
+    </div>
   </form>
-
-  <!--opcije pri meniju so napisane ročno!!-->

@@ -1,8 +1,8 @@
 % setdefault('naslov', 'Osebe')
 % rebase('osnova.html', izbrani_zavihek='osebe')
 
-  <table class="table table-striped">
-  <tr>
+  <table class="table table-hover">
+  <thead class="thead-light">
      <th>Uporabniško ime</th>
      <th>Ime</th>
      <th>Priimek</th>
@@ -10,7 +10,7 @@
      <th>Državljanstvo</th>
      <th>Članstvo</th>
      <th>Številka izleta</th>
-  </tr>
+  </thead>
   %for (uporabnisko_ime,ime,priimek,datum_rojstva,drzavljanstvo,clanstvo,st_izleta) in oseba:
     <tr>
        <td>{{uporabnisko_ime}}</td>
@@ -24,7 +24,9 @@
   %end
   </table>
 
+  <!--
   <p>
-    <a href="{{url('/obisk')}}" type="button" class="btn btn-info">Obiski</a>
-    <a href="{{url('/skupine')}}" type="button" class="btn btn-info">Skupine</a>
+    <a href="{{url('obisk')}}" type="button" class="btn btn-info">Obiski</a>
+    <a href="{{url('skupine')}}" type="button" class="btn btn-info">Skupine</a>
   </p>
+  -->

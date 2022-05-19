@@ -5,8 +5,28 @@
   <p class="opozorilo">{{napaka}}</p>
 %end
 
-  <form action="{{url('/dodaj_skupino')}}" method="POST">
-    <p>ID skupine: <input type="numeric" name="id_skupine" value="{{id_skupine}}"></p>
-    <p>Ime skupine: <input type="text" name="ime_skupine" value="{{ime_skupine}}"></p>
-    <p><input type="submit" value="Dodaj"></p>
-  </form>
+<form action="{{url('dodaj_skupino')}}" method="POST">
+  <div class="form-row">
+    <div class="form-group col-md-3">
+      <label for="id_skupine">ID nove skupine:</label>
+      <input id="id_skupine" name="id_skupine" type="integer" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-5">
+      <label for="ime_skupine">Ime skupine:</label>
+      <input id="ime_skupine" name="ime_skupine" type="text" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
+    </div>
+  </div>
+  <div class="form-row col">
+    <button class="btn btn-info" type="submit">
+      Dodaj novo skupino
+    </button>
+  </div>
+</form>

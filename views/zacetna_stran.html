@@ -1,8 +1,12 @@
-<html>
-    <body>
-        <p>
-            <a href="{{url('/prijava')}}">Prijava</a>
-            <a href="{{url('/registracija')}}">Registracija</a>
-        </p>
-    </body> 
-</html>
+<div class="row mx-0 bg-light">
+    <div class="col py-3 d-flex justify-content-end align-items-center">
+        <a href="{{url('prijava_get')}}">
+            <button type="button" class="btn btn-info">Prijava</button>
+        </a>
+    </div>
+    <div class="col py-3 d-flex justify-content-end align-items-center">
+        <a href="{{url('registracija_get')}}">
+            <button type="button" class="btn btn-info">Registracija</button>
+        </a>
+    </div>
+</div>

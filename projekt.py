@@ -37,10 +37,10 @@ def nastaviSporocilo(sporocilo = None):
 def static(filename):
     return static_file(filename, root='static')
 
-#začetno stran je treba še popraviti
+##########################
+# začetna stran
 @get('/')
 def hello():
-#    return 'Začetna stran'
     return template('zacetna_stran.html')
 
 ##########################
@@ -50,6 +50,18 @@ def hashGesla(s):
     m = hashlib.sha256()
     m.update(s.encode("utf-8"))
     return m.hexdigest()
+
+####### mogoče bi bila to funkcija, ki zgosti že obstoječa gesla? 
+####### trenutno ne dela, ampak ne vem, kaj je treba popraviti?
+# def zgosti():
+#     cur.execute("SELECT geslo FROM oseba;")
+#     gesla = cur.fetchall()
+#     for geslo in gesla:
+#         geslo1 = hashGesla(geslo)
+#         cur.execute("UPDATE oseba SET geslo=%s WHERE geslo=%s",
+#                     (geslo1,geslo))
+#         conn.commit()
+#     return 
 
 @get('/registracija')
 def registracija_get():
@@ -66,9 +78,8 @@ def registracija_post():
     datum_rojstva = request.forms.datum_rojstva
     if uporabnisko_ime is None or geslo is None or geslo2 is None:
         nastaviSporocilo('Registracija ni možna') 
-        redirect('/registracija')
+        redirect(url('registracija_get'))
         return
-    oseba = cur 
     uporabnik = None
     try: 
         cur.execute("SELECT * FROM oseba WHERE uporabnisko_ime = %s", [uporabnisko_ime])
@@ -77,27 +88,23 @@ def registracija_post():
         uporabnik = None
     if uporabnik is not None:
         nastaviSporocilo('Registracija ni možna') 
-        print('uporabnik obstaja')
-        redirect('/registracija')
+        redirect(url('registracija_get'))
         return
     if len(geslo) < 4:
         nastaviSporocilo('Geslo mora imeti vsaj 4 znake.') 
-        print('prekratko geslo')
-        redirect('/registracija')
+        redirect(url('registracija_get'))
         return
     if geslo != geslo2:
         nastaviSporocilo('Gesli se ne ujemata.')
-        print('različni gesli') 
-        redirect('/registracija')
+        redirect(url('registracija_get'))
         return
     zgostitev = hashGesla(geslo)
     cur.execute("""INSERT INTO oseba
                 (uporabnisko_ime,ime,priimek,datum_rojstva,geslo)
                 VALUES (%s, %s, %s, %s, %s)""", (uporabnisko_ime,ime,priimek,datum_rojstva, zgostitev))
     conn.commit()
-    print('uspešna registracija')
-    request.set_cookie('uporabnisko_ime', uporabnisko_ime, path='/', secret=skrivnost)
-    redirect('/osebe')
+    response.set_cookie('uporabnisko_ime', uporabnisko_ime, path='/', secret=skrivnost)
+    redirect(url('osebe'))
 
 
 @get('/prijava')
@@ -110,10 +117,8 @@ def prijava_post():
     geslo = request.forms.geslo
     if uporabnisko_ime is None or geslo is None:
         nastaviSporocilo('Uporabniško ima in geslo morata biti neprazna') 
-        print('izpolni vse')
-        redirect('/prijava')
+        redirect(url('prijava_get'))
         return
-    oseba = cur   
     hashBaza = None
     try: 
         cur.execute("SELECT geslo FROM oseba WHERE uporabnisko_ime = %s", [uporabnisko_ime])
@@ -122,31 +127,26 @@ def prijava_post():
         hashBaza = None
     if hashBaza is None:
         nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
-        print('se ne ujema')
-        redirect('/prijava')
+        redirect(url('prijava_get'))
         return
     if hashGesla(geslo) != hashBaza:
         nastaviSporocilo('Uporabniško geslo ali ime nista ustrezni') 
-        print('neustrezno')
-        redirect('/prijava')
+        redirect(url('prijava_get'))
         return
     response.set_cookie('uporabnisko_ime', uporabnisko_ime, secret=skrivnost)
-    print('Uspešna prijava')
-    redirect('/osebe')
+    redirect(url('osebe'))
     
 @get('/odjava')
 def odjava_get():
     response.delete_cookie(key='uporabnisko_ime')
-    redirect(url('prijava_get'))
+    redirect(url('hello'))
 
 
 ##################################
-
-
 # osebe
 
 @get('/osebe')
-def index():
+def osebe():
     cur.execute("""SELECT uporabnisko_ime,ime,priimek,datum_rojstva,drzavljanstvo,clanstvo,st_izleta 
                 FROM oseba ORDER BY priimek, ime""")
     return template('osebe.html', oseba=cur)
@@ -154,7 +154,7 @@ def index():
 # obiski
 
 @get('/obisk')
-def obiski():
+def obisk():
     cur.execute("""SELECT st_izleta,st_dni,ime_mesta,ime_drzave,vrsta_transporta,vrsta_namestitve
                 FROM obisk
                 JOIN mesto ON obisk.id_mesta=mesto.id
@@ -189,9 +189,13 @@ def dodaj_transport_post():
                         napaka='Zgodila se je napaka: %s' % ex)
     redirect(url('transport'))
 
+def najdi_id_transporta():
+    cur.execute("SELECT id_transporta,vrsta_transporta FROM transport;")
+    return cur.fetchall()
+
 @get('/uredi_transport')
 def uredi_transport():
-    return template('uredi_transport.html', id_transporta='', vrsta_transporta='', cena='', napaka=None)
+    return template('uredi_transport.html', id_transporta='', vrsta_transporta='', cena='', napaka=None, transporti=najdi_id_transporta())
 
 @post('/uredi_transport')
 def uredi_transport_post():
@@ -207,23 +211,6 @@ def uredi_transport_post():
         return template('uredi_transport.html', id_transporta=id_transporta, vrsta_transporta=vrsta_transporta, cena=cena,
                         napaka='Zgodila se je napaka: %s' % ex)
     redirect(url('transport'))
-
-# @get('/brisi_transport/<id_transporta>/')
-# def brisi_transport(id_transporta):
-#     cur.execute("""SELECT * FROM transport WHERE id_transporta = %s""", [id_transporta])
-#     return template('transport.html', id_transporta=id_transporta, transport=cur)
-# 
-# @post('/brisi_transport/<id_transporta>') 
-# def brisi_transport_post(id_transporta):
-#     id_transporta = request.forms.id_transporta
-#     try:
-#         cur.execute("DELETE FROM transport WHERE id_transporta = %s", [id_transporta])
-#         conn.commit()
-#     except Exception as ex:
-#         conn.rollback()
-#         return template('transport.html', id_transporta=id_transporta,
-#                         napaka='Zgodila se je napaka: %s' % ex)
-#     redirect(url('/transport'))
 
 # namestitev
 
@@ -297,7 +284,7 @@ def dodaj_skupino_post():
         conn.rollback()
         return template('dodaj_skupino.html', id_skupine=id_skupine, ime_skupine=ime_skupine,
                         napaka='Zgodila se je napaka: %s' % ex)
-    redirect(url('/skupine'))
+    redirect(url('skupine'))
 
 @get('/clani_skupine/<x:int>/')
 def clani_skupine(x):
@@ -305,9 +292,13 @@ def clani_skupine(x):
                 FROM oseba WHERE clanstvo = %s""", [x])
     return template('clani_skupine.html', x=x, oseba=cur)
 
+def najdi_id_skupine():
+    cur.execute("SELECT * FROM skupina;")
+    return cur.fetchall()
+
 @get('/uredi_skupino')
 def uredi_skupino():
-    return template('uredi_skupino.html', id_skupine='', ime_skupine='', napaka=None)
+    return template('uredi_skupino.html', id_skupine='', ime_skupine='', napaka=None, skupine = najdi_id_skupine())
 
 @post('/uredi_skupino')
 def uredi_skupino_post():
@@ -321,7 +312,7 @@ def uredi_skupino_post():
         conn.rollback()
         return template('uredi_skupino.html', id_skupine=id_skupine, ime_skupine=ime_skupine,
                         napaka='Zgodila se je napaka: %s' % ex)
-    redirect(url('/skupine'))
+    redirect(url('skupine'))
 
 ######################################################################
 # Glavni program

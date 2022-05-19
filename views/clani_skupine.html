@@ -1,8 +1,8 @@
 % setdefault('naslov', 'Člani skupine')
 % rebase('osnova.html')
 
-<table cellpadding="0" cellspacing="0" border="1">
-    <tr>
+<table class="table table-hover">
+    <thead class="thead-light">
        <th>Uporabniško ime</th>
        <th>Ime</th>
        <th>Priimek</th>
@@ -10,7 +10,7 @@
        <th>Državljanstvo</th>
        <th>Članstvo</th>
        <th>Številka izleta</th>
-    </tr>
+    </thead>
     %for (uporabnisko_ime,ime,priimek,datum_rojstva,drzavljanstvo,clanstvo,st_izleta) in oseba:
       <tr>
          <td>{{uporabnisko_ime}}</td>
@@ -22,8 +22,8 @@
          <td>{{st_izleta}}</td>
       </tr>
     %end
-    </table>
+</table>
 
   <p>
-    <a href="{{url('/skupine')}}" type="button" class="btn-info">Skupine</a>
+    <a href="{{url('skupine')}}" type="button" class="btn btn-info">Nazaj na skupine</a>
   </p>

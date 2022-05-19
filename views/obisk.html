@@ -1,8 +1,8 @@
 % setdefault('naslov', 'Obisk')
 % rebase('osnova.html', izbrani_zavihek='obisk')
 
-  <table cellpadding="0" cellspacing="0" border="1">
-  <tr>
+  <table class="table table-hover">
+  <thead class="thead-light">
      <th>Št. izleta</th>
      <th>Št. dni</th>
      <th>Mesto</th>
@@ -22,8 +22,10 @@
   %end
   </table>
 
+  <!--
   <p>
-   <a href="{{url('/osebe')}}">Osebe</a>
-   <a href="{{url('/transport')}}">Transport</a>
-   <a href="{{url('/namestitev')}}">Namestitve</a>
+   <a href="{{url('osebe')}}">Osebe</a>
+   <a href="{{url('transport')}}">Transport</a>
+   <a href="{{url('namestitev')}}">Namestitve</a>
  </p>
+ -->

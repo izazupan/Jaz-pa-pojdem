@@ -6,8 +6,41 @@
 %end
 
   <form action="{{url('uredi_transport')}}" method="POST">
-    <p>ID transporta: <input type="numeric" name="id_transporta" value="{{id_transporta}}"></p>
-    <p>Vrsta: <input type="text" name="vrsta_transporta" value="{{vrsta_transporta}}"></p>
-    <p>Cena: <input type="numeric" name="cena" value="{{cena}}"></p>
-    <p><input type="submit" value="Uredi"></p>
+    <div class="form-row">
+      <div class="form-group col-md-3">
+        <label for="id_transporta">Vrsta transporta:</label>
+        <select name="id_transporta" id="id_transporta"
+          type="integer" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          >
+        % for id,vrsta in transporti:
+            <option value='{{id}}' {{'selected' if id==id_transporta else ''}}>{{vrsta}}</option>
+        % end  
+      </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-5">
+        <label for="vrsta_transporta">Nova vrsta transporta:</label>
+        <input id="vrsta_transporta" name="vrsta_transporta" type="text" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group col-md-3">
+        <label for="cena">Cena:</label>
+        <input id="cena" name="cena" type="integer" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          />
+      </div>
+    </div>
+    <div class="form-row col">
+      <button class="btn btn-info" type="submit">
+        Uredi
+      </button>
+    </div>
   </form>
