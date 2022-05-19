@@ -1,7 +1,7 @@
 % setdefault('naslov', 'Osebe')
-%rebase('osnova.html', izbrani_zavihek='osebe')
+% rebase('osnova.html', izbrani_zavihek='osebe')
 
-  <table cellpadding="0" cellspacing="0" border="1">
+  <table class="table table-striped">
   <tr>
      <th>Uporabniško ime</th>
      <th>Ime</th>
@@ -25,6 +25,6 @@
   </table>
 
   <p>
-    <a href="{{url('/obisk')}}">Obiski</a>
-    <a href="{{url('/skupine')}}">Skupine</a>
+    <a href="{{url('/obisk')}}" type="button" class="btn-info">Obiski</a>
+    <a href="{{url('/skupine')}}" type="button" class="btn-in">Skupine</a>
   </p>
