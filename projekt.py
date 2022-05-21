@@ -118,7 +118,7 @@ def registracija_post():
                 VALUES (%s, %s, %s, %s, %s)""", (uporabnisko_ime,ime,priimek,datum_rojstva, zgostitev))
     conn.commit()
     response.set_cookie('uporabnisko_ime', uporabnisko_ime, path='/', secret=skrivnost)
-    redirect(url('osebe'))
+    redirect(url('podatki_prijavljenega'))
 
 
 @get('/prijava')
@@ -148,14 +148,81 @@ def prijava_post():
         redirect(url('prijava_get'))
         return
     response.set_cookie('uporabnisko_ime', uporabnisko_ime, secret=skrivnost)
-    redirect(url('osebe'))
+    redirect(url('podatki_prijavljenega'))
     
 @get('/odjava')
 def odjava_get():
     response.delete_cookie(key='uporabnisko_ime')
     redirect(url('hello'))
 
+##################################
+# podatki prijavljenega
 
+@get('/podatki_prijavljenega')
+def podatki_prijavljenega():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
+    uporabnisko_ime = request.get_cookie("uporabnisko_ime", secret=skrivnost)
+    cur.execute("""SELECT uporabnisko_ime,ime,priimek,datum_rojstva,drzavljanstvo,geslo,clanstvo,st_izleta 
+                FROM oseba WHERE uporabnisko_ime=%s""",[uporabnisko_ime])
+    return template('podatki_prijavljenega.html', oseba=cur)
+
+def najdi_id_skupine():
+    cur.execute("SELECT id_skupine,ime_skupine FROM skupina;")
+    return cur.fetchall()
+
+@get('/uredi_clanstvo')
+def uredi_clanstvo():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
+    return template('uredi_clanstvo.html', id_skupine='', skupine=najdi_id_skupine())
+
+@post('/uredi_clanstvo')
+def uredi_clanstvo_post():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
+    uporabnisko_ime = request.get_cookie("uporabnisko_ime", secret=skrivnost)
+    id_skupine = request.forms.id_skupine
+    try:
+        cur.execute("UPDATE oseba SET clanstvo=%s WHERE uporabnisko_ime=%s",
+                    (id_skupine, uporabnisko_ime))
+        conn.commit()
+    except Exception as ex:
+        conn.rollback()
+        return template('uredi_clanstvo.html', id_skupine=id_skupine,
+                        napaka='Zgodila se je napaka: %s' % ex)
+    redirect(url('podatki_prijavljenega'))
+
+def najdi_kratico():
+    cur.execute("SELECT kratica,ime_drzave FROM drzava;")
+    return cur.fetchall()
+
+@get('/uredi_drzavljanstvo')
+def uredi_drzavljanstvo():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
+    return template('uredi_drzavljanstvo.html', kratica='', drzave=najdi_kratico())
+
+@post('/uredi_drzavljanstvo')
+def uredi_drzavljanstvo_post():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
+    uporabnisko_ime = request.get_cookie("uporabnisko_ime", secret=skrivnost)
+    drzavljanstvo = request.forms.drzavljanstvo
+    try:
+        cur.execute("UPDATE oseba SET drzavljanstvo=%s WHERE uporabnisko_ime=%s",
+                    (drzavljanstvo, uporabnisko_ime))
+        conn.commit()
+    except Exception as ex:
+        conn.rollback()
+        return template('uredi_drzavljanstvo.html', drzavljanstvo=drzavljanstvo,
+                        napaka='Zgodila se je napaka: %s' % ex)
+    redirect(url('podatki_prijavljenega'))
 ##################################
 # osebe
 

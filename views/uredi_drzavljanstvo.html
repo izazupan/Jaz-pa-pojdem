@@ -1,0 +1,25 @@
+% setdefault('naslov', 'Urejanje državljanstva')
+% rebase('osnova.html')
+
+
+  <form action="{{url('uredi_drzavljanstvo')}}" method="POST">
+    <div class="form-row">
+      <div class="form-group col-md-3">
+        <label for="drzavljanstvo">Izberi državo</label>
+        <select name="drzavljanstvo" id="drzavljanstvo"
+          type="integer" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          >
+        % for drzavljanstvo,ime_drzave in drzave:
+            <option value='{{drzavljanstvo}}' {{'selected' if id==drzavljanstvo else ''}}>{{ime_drzave}}</option>
+        % end  
+      </select>
+      </div>
+    </div>
+    <div class="form-row col">
+      <button class="btn btn-info" type="submit">
+        Uredi
+      </button>
+    </div>
+  </form>

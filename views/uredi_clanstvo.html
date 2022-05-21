@@ -1,0 +1,29 @@
+% setdefault('naslov', 'Urejanje članstva')
+% rebase('osnova.html')
+
+
+  <form action="{{url('uredi_clanstvo')}}" method="POST">
+    <div class="form-row">
+      <div class="form-group col-md-3">
+        <label for="id_skupine">Izberi skupino</label>
+        <select name="id_skupine" id="id_skupine"
+          type="integer" class="form-control" required
+          oninput="this.setCustomValidity('')"
+          oninvalid="this.setCustomValidity('Obvezno polje')"
+          >
+        % for id_skupine,ime_skupine in skupine:
+            <option value='{{id_skupine}}' {{'selected' if id==id_skupine else ''}}>{{ime_skupine}}</option>
+        % end  
+      </select>
+      </div>
+    </div>
+    <div class="form-row col">
+      <button class="btn btn-info" type="submit">
+        Uredi
+      </button>
+    </div>
+  </form>
+
+  <p>Želiš dodati novo skupino ali spremeniti obstoječo?
+    <a href="{{url('skupine')}}" type="button" class="btn btn-info">Skupine</a>
+  </p>
