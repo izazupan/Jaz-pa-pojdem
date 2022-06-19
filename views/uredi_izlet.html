@@ -1,0 +1,27 @@
+% setdefault('naslov', 'Urejanje izleta')
+% rebase('osnova.html')
+
+
+  <form action="{{url('uredi_izlet')}}" method="POST">
+    <div class="form-row">
+      <div class="form-group col-md-3">
+        <label for="st_izleta">Vpiši številko izleta:</label>
+        <input id="st_izleta" name="st_izleta" type="integer" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
+      </div>
+    </div>
+    <div class="form-row col">
+      <button class="btn btn-info" type="submit">
+        Uredi
+      </button>
+    </div>
+  </form>
+
+  <p>Si želiš ogledati, kateri izleti obstajajo?
+    <a href="{{url('obisk')}}" type="button" class="btn btn-info">Izleti</a>
+  </p>
+  <p>Želiš dodati nov izlet?
+    <a href="{{url('dodaj_izlet')}}" type="button" class="btn btn-info">Dodaj izlet</a>
+  </p>

@@ -1,0 +1,74 @@
+% setdefault('naslov', 'Dodajanje izleta')
+% rebase('osnova.html')
+
+%if napaka:
+  <p class="opozorilo">{{napaka}}</p>
+%end
+
+<form action="{{url('dodaj_izlet')}}" method="POST">
+  <div class="form-row">
+    <div class="form-group col-md-3">
+      <label for="st_izleta">Št. izleta:</label>
+      <input id="st_izleta" name="st_izleta" type="integer" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-3">
+      <label for="st_dni">Št. dni:</label>
+      <input id="st_dni" name="st_dni" type="integer" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        />
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-3">
+      <label for="id_mesta">Mesto:</label>
+      <select name="id_mesta" id="id_mesta"
+        type="integer" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        >
+      % for id,ime_mesta in id_mesta:
+          <option value='{{id}}' {{'selected' if id==id_mesta else ''}}>{{ime_mesta}}</option>
+      % end  
+    </select>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-3">
+      <label for="id_namestitve">Vrsta namestitve:</label>
+      <select name="id_namestitve" id="id_namestitve"
+        type="integer" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        >
+      % for id,vrsta in id_namestitve:
+          <option value='{{id}}' {{'selected' if id==id_namestitve else ''}}>{{vrsta}}</option>
+      % end  
+    </select>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-3">
+      <label for="id_transporta">Vrsta transporta:</label>
+      <select name="id_transporta" id="id_transporta"
+        type="integer" class="form-control" required
+        oninput="this.setCustomValidity('')"
+        oninvalid="this.setCustomValidity('Obvezno polje')"
+        >
+      % for id,vrsta in id_transporta:
+          <option value='{{id}}' {{'selected' if id==id_transporta else ''}}>{{vrsta}}</option>
+      % end  
+    </select>
+    </div>
+  </div>
+  <div class="form-row col">
+    <button class="btn btn-info" type="submit">
+      Dodaj nov izlet
+    </button>
+  </div>
+</form>

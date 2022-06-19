@@ -449,6 +449,68 @@ def uredi_skupino_post():
                         napaka='Zgodila se je napaka: %s' % ex)
     redirect(url('skupine'))
 
+# izleti
+
+def najdi_izlet():
+    cur.execute("SELECT st_izleta,st_dni,id_mesta,id_namestitve,id_transporta FROM obisk;")
+    return cur.fetchall()
+
+@get('/uredi_izlet')
+def uredi_izlet():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
+    return template('uredi_izlet.html', obisk=najdi_izlet())
+
+@post('/uredi_izlet')
+def uredi_izlet_post():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
+    uporabnisko_ime = request.get_cookie("uporabnisko_ime", secret=skrivnost)
+    st_izleta = request.forms.st_izleta
+    try:
+        cur.execute("UPDATE oseba SET st_izleta=%s WHERE uporabnisko_ime=%s",
+                    (st_izleta, uporabnisko_ime))
+        conn.commit()
+    except Exception as ex:
+        conn.rollback()
+        return template('uredi_izlet.html', st_izleta=st_izleta,
+                        napaka='Zgodila se je napaka: %s' % ex)
+    redirect(url('podatki_prijavljenega'))
+
+def najdi_id_mesta():
+    cur.execute("SELECT id, ime_mesta FROM mesto;")
+    return cur.fetchall()
+
+@get('/dodaj_izlet')
+def dodaj_izlet():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
+    return template('dodaj_izlet.html', st_izleta='', st_dni='', id_mesta=najdi_id_mesta(), id_namestitve=najdi_id_namestitve(), id_transporta=najdi_id_transporta(), napaka=None)
+
+@post('/dodaj_izlet')
+def dodaj_izlet_post():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
+    st_izleta = request.forms.st_izleta
+    st_dni = request.forms.st_dni
+    id_mesta = request.forms.id_mesta
+    id_namestitve = request.forms.id_namestitve
+    id_transporta = request.forms.id_transporta
+    try:
+        cur.execute("INSERT INTO obisk (st_izleta, st_dni, id_mesta, id_namestitve, id_transporta) VALUES (%s, %s, %s, %s, %s)",
+                    (st_izleta, st_dni, id_mesta, id_namestitve, id_transporta))
+        conn.commit()
+    except Exception as ex:
+        conn.rollback()
+        return template('dodaj_izlet.html', st_izleta=st_izleta, st_dni=st_dni, id_mesta=id_mesta, id_namestitve=id_namestitve, id_transporta=id_transporta,
+                        napaka='Zgodila se je napaka: %s' % ex)
+    redirect(url('obisk'))
+
+
 ######################################################################
 # Glavni program
 
