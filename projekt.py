@@ -65,18 +65,6 @@ def hashGesla(s):
     m.update(s.encode("utf-8"))
     return m.hexdigest()
 
-####### mogoče bi bila to funkcija, ki zgosti že obstoječa gesla? 
-####### trenutno ne dela, ampak ne vem, kaj je treba popraviti?
-# def zgosti():
-#     cur.execute("SELECT geslo FROM oseba;")
-#     gesla = cur.fetchall()
-#     for geslo in gesla:
-#         geslo1 = hashGesla(geslo)
-#         cur.execute("UPDATE oseba SET geslo=%s WHERE geslo=%s",
-#                     (geslo1,geslo))
-#         conn.commit()
-#     return 
-
 @get('/registracija')
 def registracija_get():
     napaka = nastaviSporocilo()
@@ -164,8 +152,13 @@ def podatki_prijavljenega():
     if uporabnik is None: 
         return
     uporabnisko_ime = request.get_cookie("uporabnisko_ime", secret=skrivnost)
-    cur.execute("""SELECT uporabnisko_ime,ime,priimek,datum_rojstva,drzavljanstvo,geslo,clanstvo,st_izleta 
-                FROM oseba WHERE uporabnisko_ime=%s""",[uporabnisko_ime])
+    cur.execute("""SELECT uporabnisko_ime,ime,priimek,datum_rojstva,ime_drzave,geslo,ime_skupine,oseba.st_izleta,ime_mesta
+                FROM oseba
+                JOIN drzava ON oseba.drzavljanstvo=drzava.kratica
+                JOIN skupina ON oseba.clanstvo=skupina.id_skupine
+                JOIN obisk ON oseba.st_izleta=obisk.st_izleta
+                JOIN mesto ON obisk.id_mesta=mesto.id
+                WHERE uporabnisko_ime=%s;""",[uporabnisko_ime])
     return template('podatki_prijavljenega.html', oseba=cur)
 
 def najdi_id_skupine():
@@ -223,6 +216,7 @@ def uredi_drzavljanstvo_post():
         return template('uredi_drzavljanstvo.html', drzavljanstvo=drzavljanstvo,
                         napaka='Zgodila se je napaka: %s' % ex)
     redirect(url('podatki_prijavljenega'))
+
 ##################################
 # osebe
 

@@ -7,15 +7,10 @@
           <th>Moji podatki</th>
           <th>Uredi</th>
       </thead>
-      % for (uporabnisko_ime,ime,priimek,datum_rojstva,drzavljanstvo,geslo,clanstvo,st_izleta) in oseba:
+      % for (uporabnisko_ime,ime,priimek,datum_rojstva,ime_drzave,geslo,ime_skupine,oseba.st_izleta,ime_mesta) in oseba:
         <tr>
             <td>Uporabniško ime</td>
             <td>{{uporabnisko_ime}}</td>
-            <td></td>
-        </tr>
-        <tr>
-            <td>Geslo</td>
-            <td></td>
             <td></td>
         </tr>
         <tr>
@@ -35,17 +30,17 @@
         </tr>
         <tr>
             <td>Državljanstvo</td>
-            <td>{{drzavljanstvo}}</td>
+            <td>{{ime_drzave}}</td>
             <td><a href="{{url('/uredi_drzavljanstvo')}}">Uredi državljanstvo</a></td>
         </tr>
         <tr>
-            <td>Članstvo</td>
-            <td>{{clanstvo}}</td>
+            <td>Članstvo v skupini</td>
+            <td>{{ime_skupine}}</td>
             <td><a href="{{url('/uredi_clanstvo')}}">Uredi članstvo</a></td>
         </tr>
         <tr>
-            <td>Izlet</td>
-            <td>{{st_izleta}}</td>
+            <td>Številka in kraj izleta</td>
+            <td>{{oseba.st_izleta}}, {{ime_mesta}}</td>
             <td><a href="{{url('/uredi_izlet')}}">Spremeni izlet</a></td>
         </tr>
       % end
