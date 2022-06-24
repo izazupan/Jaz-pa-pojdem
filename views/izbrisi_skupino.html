@@ -5,7 +5,7 @@
   <p class="opozorilo">{{napaka}}</p>
 %end
 
-<form action="{{url('izbrisi_skupino_post')}}" method="POST">
+<form action="{{url('izbrisi_skupino')}}" method="post">
   <div class="form-row">
     <div class="form-group col-md-3">
       <label for="id_skupine">Skupina:</label>
@@ -14,7 +14,7 @@
         oninput="this.setCustomValidity('')"
         oninvalid="this.setCustomValidity('Obvezno polje')"
         >
-      % for id,ime in skupine:
+      % for (id,ime) in skupine:
           <option value='{{id}}' {{'selected' if id==id_skupine else ''}}>{{ime}}</option>
       % end  
     </select>

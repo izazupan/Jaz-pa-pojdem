@@ -457,12 +457,12 @@ def izbrisi_skupino_post():
         return
     id_skupine = request.forms.id_skupine
     try:
-        cur.execute("DELETE FROM skupina WHERE id_skupine=%s", (id_skupine))
+        cur.execute("DELETE FROM skupina WHERE id_skupine={0}".format(id_skupine))
         conn.commit()
     except Exception as ex:
         conn.rollback()
         return template('izbrisi_skupino.html', id_skupine=id_skupine,
-                        napaka='Zgodila se je napaka: %s' % ex)
+                        napaka='Zgodila se je napaka: %s' % ex, skupine=najdi_id_skupine())
     redirect(url('skupine'))
 
 # izleti
