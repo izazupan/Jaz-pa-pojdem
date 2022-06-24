@@ -49,7 +49,7 @@ def preveriUporabnika():
             uporabnik = None
         if uporabnik: 
             return uporabnik
-    redirect('/prijava')
+    redirect(url('prijava'))
 
 ##########################
 # začetna stran
@@ -154,10 +154,10 @@ def podatki_prijavljenega():
     uporabnisko_ime = request.get_cookie("uporabnisko_ime", secret=skrivnost)
     cur.execute("""SELECT uporabnisko_ime,ime,priimek,datum_rojstva,ime_drzave,geslo,ime_skupine,oseba.st_izleta,ime_mesta
                 FROM oseba
-                JOIN drzava ON oseba.drzavljanstvo=drzava.kratica
-                JOIN skupina ON oseba.clanstvo=skupina.id_skupine
-                JOIN obisk ON oseba.st_izleta=obisk.st_izleta
-                JOIN mesto ON obisk.id_mesta=mesto.id
+                LEFT JOIN drzava ON oseba.drzavljanstvo=drzava.kratica
+                LEFT JOIN skupina ON oseba.clanstvo=skupina.id_skupine
+                LEFT JOIN obisk ON oseba.st_izleta=obisk.st_izleta
+                LEFT JOIN mesto ON obisk.id_mesta=mesto.id
                 WHERE uporabnisko_ime=%s;""",[uporabnisko_ime])
     return template('podatki_prijavljenega.html', oseba=cur)
 

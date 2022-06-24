@@ -1,7 +1,7 @@
 % setdefault('naslov', 'Prijava')
 % rebase('osnova.html')
 
-<form action="/prijava" method="post" autocomplete="off">
+<form action="{{url('prijava_post')}}" method="post" autocomplete="off">
     <div class="form-row">
       <div class="form-group col-md-6">
         <label for="uporabnisko_ime">Uporabniško ime</label>
