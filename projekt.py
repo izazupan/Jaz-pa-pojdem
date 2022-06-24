@@ -457,8 +457,7 @@ def izbrisi_skupino_post():
         return
     id_skupine = request.forms.id_skupine
     try:
-        cur.execute("DELETE FROM skupina WHERE id_skupine=%s",
-                    (id_skupine))
+        cur.execute("DELETE FROM skupina WHERE id_skupine=%s", (id_skupine))
         conn.commit()
     except Exception as ex:
         conn.rollback()

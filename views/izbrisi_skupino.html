@@ -1,11 +1,11 @@
-% setdefault('naslov', 'Urejanje skupine')
+% setdefault('naslov', 'Izbriši skupino')
 % rebase('osnova.html')
 
 %if napaka:
   <p class="opozorilo">{{napaka}}</p>
 %end
 
-<form action="{{url('uredi_skupino')}}" method="POST">
+<form action="{{url('izbrisi_skupino_post')}}" method="POST">
   <div class="form-row">
     <div class="form-group col-md-3">
       <label for="id_skupine">Skupina:</label>
