@@ -443,6 +443,29 @@ def uredi_skupino_post():
                         napaka='Zgodila se je napaka: %s' % ex)
     redirect(url('skupine'))
 
+@get('/izbrisi_skupino')
+def izbrisi_skupino():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
+    return template('izbrisi_skupino.html', id_skupine='', napaka=None, skupine = najdi_id_skupine())
+
+@post('/izbrisi_skupino')
+def izbrisi_skupino_post():
+    uporabnik = preveriUporabnika()
+    if uporabnik is None: 
+        return
+    id_skupine = request.forms.id_skupine
+    try:
+        cur.execute("DELETE FROM skupina WHERE id_skupine=%s",
+                    (id_skupine))
+        conn.commit()
+    except Exception as ex:
+        conn.rollback()
+        return template('izbrisi_skupino.html', id_skupine=id_skupine,
+                        napaka='Zgodila se je napaka: %s' % ex)
+    redirect(url('skupine'))
+
 # izleti
 
 def najdi_izlet():
